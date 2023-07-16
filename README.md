@@ -1,4 +1,4 @@
-O projeto possui dois passos:
+# O projeto possui dois passos:
 1. Implementação da rede neural
 2. Construção de um mapa interativo
 
