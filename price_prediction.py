@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 from sklearn.model_selection import KFold
-from itertools import product
+from sklearn.preprocessing import MinMaxScaler
 
 new_data = pd.read_csv('kc_house_data.csv')
 
@@ -11,6 +11,10 @@ new_data = pd.read_csv('kc_house_data.csv')
 data = new_data.sample(frac=1)
 data = data.drop(['id', 'date', 'zipcode'], axis=1)
 data = data.dropna()
+
+scaler = MinMaxScaler()
+data = pd.DataFrame(scaler.fit_transform(data), columns=data.columns)
+
 X = data.drop('price', axis=1)
 y = data['price']
 
@@ -21,11 +25,7 @@ input_size = len(X.columns)
 activation_func = 'relu'
 num_epochs = 100
 best_loss = float('inf')
-best_model = None
-best_X_train = None
-best_y_train = None
-best_X_test = None
-best_y_test = None
+best_model, best_X_train, best_y_train, best_X_test, best_y_test = None, None, None, None, None
 
 # Iteração dos hiperparâmetros
 for layer_sequence in layers_sequences:
@@ -61,12 +61,7 @@ for layer_sequence in layers_sequences:
     print(f'Média: {np.mean(losses)} ± {np.std(losses)}')
 
 best_predictions = best_model.predict(best_X_test, verbose=0)
-print('Best layer sequence')
-print(best_layer_sequence)
-# print('Predictions')
-# print(best_predictions)
-# print('Best_y_test')
-# print(best_y_test)
+print('Best layer sequence:', best_layer_sequence)
 
 
 # Mapas
