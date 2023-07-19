@@ -1,6 +1,8 @@
 # Redes neurais
 import pandas as pd
 import numpy as np
+import folium
+import branca.colormap as cm
 import tensorflow as tf
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import MinMaxScaler
@@ -65,3 +67,6 @@ print('Best layer sequence:', best_layer_sequence)
 
 
 # Mapas
+lim_pontos = float('inf')
+num_pontos = min(data.shape[0], lim_pontos)
+
