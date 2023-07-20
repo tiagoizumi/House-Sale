@@ -73,3 +73,41 @@ new_data = data.copy()
 new_data['is_test'] = [idx in best_test_idx for idx, _ in new_data.iterrows()]
 new_data['price_prediction'] = predictions
 # Mapas
+lim_pontos = float('inf')
+num_pontos = min(data.shape[0], lim_pontos)
+
+data['id'], data['date'] = original_data['id'], original_data['date']
+data['lat'], data['long'] =  original_data['lat'], original_data['long']
+ordem_das_colunas = ['price', 'NEW PRICE', 'id', 'date', 'bedrooms', 'bathrooms', 'sqft_living',
+                     'sqft_lot', 'floors', 'waterfront', 'view', 'condition', 'grade',
+                     'sqft_above', 'sqft_basement', 'yr_built', 'yr_renovated', 'zipcode',
+                     'lat', 'long', 'sqft_living15', 'sqft_lot15' ]
+data = data.reindex(columns=ordem_das_colunas)
+diff_real = data['price']-data['NEW PRICE']
+data['diferenca'] = diff_real
+
+lat_ini = np.mean([data.lat.min(),data.lat.max()])
+long_ini = np.mean([data.long.min(),data.long.max()])
+mapObj = folium.Map(location=[lat_ini,long_ini], zoom_control=False)
+
+# Marcadores
+cont = 0
+limite1 = data[:num_pontos+1]['diferenca'].min()
+limite2 = 0
+limite3 = data[:num_pontos+1]['diferenca'].max()
+
+colormap = cm.LinearColormap(colors=['green', 'white', 'red'], index=[limite1, limite2, limite3], vmin=limite1, vmax=limite3)
+
+for index,loc in data.iterrows():
+    # tip = f"${loc.price}"
+    tip = str()
+    cont += 1
+    if cont > num_pontos:
+        break
+    for col, value in loc.items():
+        tip += f"\t{col}: {value}<br>"
+    folium.CircleMarker(location=[loc.lat,loc.long],radius=3,
+                        tooltip=tip, fill=True, fill_color=colormap(loc['diferenca']),
+                        fill_opacity=1, weight=1, color='black').add_to(mapObj)
+
+mapObj.save('output.html')
