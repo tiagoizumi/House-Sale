@@ -99,4 +99,4 @@ for i, loc in new_data.iterrows():
     folium.CircleMarker(location=[loc.lat,loc.long],radius=3, fill=True, fill_opacity=1, tooltip = tip,
                         fill_color=colormap(loc['erro']), weight=1, color='black', popup=popup).add_to(mapObj)
 
-mapObj.save('all_data.html')
+mapObj.save('output.html')
