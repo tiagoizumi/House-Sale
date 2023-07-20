@@ -90,13 +90,14 @@ for i, loc in new_data.iterrows():
     cont += 1
     if cont > num_pontos:
         break
-    popup = str()
-    for col, value in loc.items():
-        popup += f"\t{col}: {value}<br>"
-    tip = f'''Price: ${loc.price} <br> 
-              Predicted: ${loc.prediction:.2f} <br> 
-              Erro: {loc.erro*100:.4f}%'''
-    folium.CircleMarker(location=[loc.lat,loc.long],radius=3, fill=True, fill_opacity=1, tooltip = tip,
-                        fill_color=colormap(loc['erro']), weight=1, color='black', popup=popup).add_to(mapObj)
+    if loc.is_test:
+        popup = str()
+        for col, value in loc.items():
+            popup += f"\t{col}: {value}<br>"
+        tip = f'''Price: ${loc.price} <br> 
+                Predicted: ${loc.prediction:.2f} <br> 
+                Erro: {loc.erro*100:.4f}%'''
+        folium.CircleMarker(location=[loc.lat,loc.long],radius=3, fill=True, fill_opacity=1, tooltip = tip,
+                            fill_color=colormap(loc['erro']), weight=1, color='black', popup=popup).add_to(mapObj)
 
 mapObj.save('output.html')
